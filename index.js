@@ -46,7 +46,6 @@ const conversionRates = {
       }
   }
 }
-
 function updateUnitOptions(selectElement) {
   const selectedValue = property.value
   selectElement.innerHTML = Object.keys(conversionRates[selectedValue]).map(unit => `<option>${unit}</option>`).join('')
