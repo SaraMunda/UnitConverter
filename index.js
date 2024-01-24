@@ -46,6 +46,7 @@ const conversionRates = {
       }
   }
 }
+
 function updateUnitOptions(selectElement) {
   const selectedValue = property.value
   selectElement.innerHTML = Object.keys(conversionRates[selectedValue]).map(unit => `<option>${unit}</option>`).join('')
@@ -70,9 +71,25 @@ const finalResult = () => {
       const toUnitValue = toUnit.value
 
       if (conversionRates[selectedProperty] && conversionRates[selectedProperty][fromUnitValue] && conversionRates[selectedProperty][toUnitValue]) {
-          const resultValue = inputValue * (conversionRates[selectedProperty][toUnitValue] / conversionRates[selectedProperty][fromUnitValue])
-          result.value = resultValue
+        let resultValue
+        if (fromUnitValue === "Kelvin" && toUnitValue === "Celsius" ) {
+          resultValue = inputValue - 273.15
+      } else if (fromUnitValue === "Celsius" && toUnitValue === "Kelvin"){
+        resultValue = inputValue + 273.15
+      } else if (fromUnitValue === "Kelvin" && toUnitValue === "Fahrenheit"){
+        resultValue = (inputValue - 273.15) * 9/5 + 32
+      } else if (fromUnitValue === "Fahrenheit" && toUnitValue === "Kelvin"){
+        resultValue = (inputValue - 32) * 5/9 + 273.15
+      } else if (fromUnitValue === "Celsius" && toUnitValue === "Fahrenheit"){
+        resultValue = inputValue * 9/5 + 32
+      } else if (fromUnitValue === "Fahrenheit" && toUnitValue === "Celsius"){
+        resultValue = (inputValue - 32) * 5/9
+      } else if (fromUnitValue === toUnitValue){
+        resultValue = "Error"
       }
+       else {resultValue = inputValue * (conversionRates[selectedProperty][toUnitValue]/conversionRates[selectedProperty][fromUnitValue])
+      } result.value = resultValue
+    }
   }
 }
 
@@ -86,3 +103,14 @@ input.addEventListener("input", function() {
 
 fromUnit.addEventListener("change", finalResult)
 toUnit.addEventListener("change", finalResult)
+
+//reset unit values when property is changed 
+
+function resetValues() {
+  input.value = ""
+  result.value = ""
+}
+
+property.addEventListener("change", function() {
+  resetValues()
+})
